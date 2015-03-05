@@ -22,34 +22,22 @@ public class DuplicatePhoneNumberReducer extends Reducer<Text,Text,Text,Text> {
 				JSONArray phoneArray = obj.getJSONObject("hasFeatureCollection").getJSONArray("phonenumber_feature");
 				JSONArray tmp = new JSONArray();
 				Map<String, Integer> phoneNumbers = new HashMap<String, Integer>();
-				Map<String, Integer> phoneNumbersFeature = new HashMap<String, Integer>();
 				for (int i = 0; i < phoneArray.length(); i++) {
 					JSONObject phoneObj = phoneArray.getJSONObject(i);
 					String cleanedNumber = phoneObj.getString("featureValue").replace("+1-","");
 					String rawPhoneNumber = phoneObj.getString("featureValue");
-					if (phoneObj.has("featureObject")) {
-						Integer pos = phoneNumbersFeature.get(cleanedNumber);
-						if (pos == null) {
-							tmp.put(phoneObj);
-							phoneNumbersFeature.put(cleanedNumber, tmp.length() - 1);
-						}
-						else if (rawPhoneNumber.startsWith("+1-")) {
-							tmp.put(pos, phoneObj);
-						}
+					Integer pos = phoneNumbers.get(cleanedNumber);
+					if (pos == null) {						
+						tmp.put(phoneObj);
+						phoneNumbers.put(cleanedNumber, tmp.length() - 1);
 					}
-					else {
-						Integer pos = phoneNumbers.get(cleanedNumber);
-						if (pos == null) {						
-							tmp.put(phoneObj);
-							phoneNumbers.put(cleanedNumber, tmp.length() - 1);
-						}
-						else if (rawPhoneNumber.startsWith("+1-")) {
-							tmp.put(pos, phoneObj);
-						}
+					else if (rawPhoneNumber.startsWith("+1-")) {
+						tmp.put(pos, phoneObj);
 					}
 				}
 				obj.getJSONObject("hasFeatureCollection").put("phonenumber_feature", tmp);
 			}catch (Exception e) {
+				LOG.debug("no phone feature");
 			}
 			finally {
 				context.write(key, new Text(obj.toString()));
