@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import json
 
 class PartitionHt:
 
@@ -8,7 +9,7 @@ class PartitionHt:
     def filter_docs(self, classname,doc):
         if "a" in doc:
             if doc["a"] == classname:
-                return doc
+                return json.dumps(doc)
 
 
 
