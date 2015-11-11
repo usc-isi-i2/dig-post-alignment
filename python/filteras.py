@@ -18,8 +18,8 @@ class FilterAdultservices:
 			if "isSimilarTo" in obj:
 				jSimilar = obj["isSimilarTo"]
 				if isinstance(jSimilar,list):
-					if len(obj["isSimilarTo"]) > 100:
-						jSimilar = []
+					if len(obj["isSimilarTo"]) > 500:
+						obj["isSimilarTo"] = []
 
 		return doc
          
